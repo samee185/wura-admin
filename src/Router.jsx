@@ -7,7 +7,7 @@ import Event from "./pages/Event"
 import Newsletter from "./pages/Newsletter";
 import Projects from "./pages/Projects";
 import SignIn from "./pages/SignIn";    
-
+ 
 const router = createBrowserRouter([
   {
     path: "/",
