@@ -6,48 +6,92 @@ const BlogContext = createContext();
 
 export const BlogProvider = ({ children }) => {
   const [blogs, setBlogs] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState({
+    fetch: false,
+    create: false,
+    update: false,
+    delete: false,
+  });
+  const [error, setError] = useState(null);
 
-  // fetch all blogs
+  // Fetch all blogs
   const fetchBlogs = async () => {
-    setLoading(true);
+    setLoading((prev) => ({ ...prev, fetch: true }));
+    setError(null);
+
     try {
       const { data } = await API.get("/blogs");
       setBlogs(data);
-    } catch (error) {
-      console.error("Error fetching blogs:", error);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to fetch blogs");
     } finally {
-      setLoading(false);
+      setLoading((prev) => ({ ...prev, fetch: false }));
     }
   };
 
-  // create new blog
+  // Create new blog (with optional file upload)
   const createBlog = async (blogData) => {
+    setLoading((prev) => ({ ...prev, create: true }));
+    setError(null);
+
     try {
-      const { data } = await API.post("/blogs", blogData);
+      let formData = new FormData();
+      Object.entries(blogData).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+
+      const { data } = await API.post("/blogs", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
       setBlogs((prev) => [...prev, data]);
-    } catch (error) {
-      console.error("Error creating blog:", error);
+      return data;
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to create blog");
+      throw err;
+    } finally {
+      setLoading((prev) => ({ ...prev, create: false }));
     }
   };
 
-  // update blog
+  // Update blog (with optional file upload)
   const updateBlog = async (id, blogData) => {
+    setLoading((prev) => ({ ...prev, update: true }));
+    setError(null);
+
     try {
-      const { data } = await API.put(`/blogs/${id}`, blogData);
+      let formData = new FormData();
+      Object.entries(blogData).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+
+      const { data } = await API.put(`/blogs/${id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
       setBlogs((prev) => prev.map((b) => (b._id === id ? data : b)));
-    } catch (error) {
-      console.error("Error updating blog:", error);
+      return data;
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to update blog");
+      throw err;
+    } finally {
+      setLoading((prev) => ({ ...prev, update: false }));
     }
   };
 
-  // delete blog
+  // Delete blog
   const deleteBlog = async (id) => {
+    setLoading((prev) => ({ ...prev, delete: true }));
+    setError(null);
+
     try {
       await API.delete(`/blogs/${id}`);
       setBlogs((prev) => prev.filter((b) => b._id !== id));
-    } catch (error) {
-      console.error("Error deleting blog:", error);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to delete blog");
+      throw err;
+    } finally {
+      setLoading((prev) => ({ ...prev, delete: false }));
     }
   };
 
@@ -57,7 +101,15 @@ export const BlogProvider = ({ children }) => {
 
   return (
     <BlogContext.Provider
-      value={{ blogs, loading, fetchBlogs, createBlog, updateBlog, deleteBlog }}
+      value={{
+        blogs,
+        loading,
+        error,
+        fetchBlogs,
+        createBlog,
+        updateBlog,
+        deleteBlog,
+      }}
     >
       {children}
     </BlogContext.Provider>
@@ -66,5 +118,5 @@ export const BlogProvider = ({ children }) => {
 
 const useBlog = () => useContext(BlogContext);
 
-export default useBlog;
-  
+
+export default BlogContext;    

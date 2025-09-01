@@ -1,3 +1,4 @@
+// src/contexts/ProjectContext.js
 import { createContext, useContext, useState, useEffect } from "react";
 import API from "../utils/api";
 
@@ -5,44 +6,96 @@ const ProjectContext = createContext();
 
 export const ProjectProvider = ({ children }) => {
   const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState({
+    fetch: false,
+    create: false,
+    update: false,
+    delete: false,
+  });
+  const [error, setError] = useState(null);
 
   const fetchProjects = async () => {
-    setLoading(true);
+    setLoading((prev) => ({ ...prev, fetch: true }));
+    setError(null);
+
     try {
       const { data } = await API.get("/projects");
       setProjects(data);
-    } catch (error) {
-      console.error("Error fetching projects:", error);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to fetch projects");
     } finally {
-      setLoading(false);
+      setLoading((prev) => ({ ...prev, fetch: false }));
     }
   };
 
   const createProject = async (projectData) => {
+    setLoading((prev) => ({ ...prev, create: true }));
+    setError(null);
+
     try {
-      const { data } = await API.post("/projects", projectData);
+      let formData = new FormData();
+      Object.entries(projectData).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          value.forEach((file) => formData.append("images", file));
+        } else {
+          formData.append(key, value);
+        }
+      });
+
+      const { data } = await API.post("/projects", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
       setProjects((prev) => [...prev, data]);
-    } catch (error) {
-      console.error("Error creating project:", error);
+      return data;
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to create project");
+      throw err;
+    } finally {
+      setLoading((prev) => ({ ...prev, create: false }));
     }
   };
 
   const updateProject = async (id, projectData) => {
+    setLoading((prev) => ({ ...prev, update: true }));
+    setError(null);
+
     try {
-      const { data } = await API.put(`/projects/${id}`, projectData);
+      let formData = new FormData();
+      Object.entries(projectData).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          value.forEach((file) => formData.append("images", file));
+        } else {
+          formData.append(key, value);
+        }
+      });
+
+      const { data } = await API.put(`/projects/${id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
       setProjects((prev) => prev.map((p) => (p._id === id ? data : p)));
-    } catch (error) {
-      console.error("Error updating project:", error);
+      return data;
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to update project");
+      throw err;
+    } finally {
+      setLoading((prev) => ({ ...prev, update: false }));
     }
   };
 
   const deleteProject = async (id) => {
+    setLoading((prev) => ({ ...prev, delete: true }));
+    setError(null);
+
     try {
       await API.delete(`/projects/${id}`);
       setProjects((prev) => prev.filter((p) => p._id !== id));
-    } catch (error) {
-      console.error("Error deleting project:", error);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to delete project");
+      throw err;
+    } finally {
+      setLoading((prev) => ({ ...prev, delete: false }));
     }
   };
 
@@ -55,6 +108,7 @@ export const ProjectProvider = ({ children }) => {
       value={{
         projects,
         loading,
+        error,
         fetchProjects,
         createProject,
         updateProject,
@@ -66,6 +120,5 @@ export const ProjectProvider = ({ children }) => {
   );
 };
 
-const useProject = () => useContext(ProjectContext);
-
-export default useProject;
+export const useProject = () => useContext(ProjectContext);
+ 
