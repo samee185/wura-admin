@@ -1,4 +1,3 @@
-// src/contexts/ProjectContext.js
 import { createContext, useContext, useState, useEffect } from "react";
 import API from "../utils/api";
 
@@ -69,4 +68,4 @@ export const ProjectProvider = ({ children }) => {
 
 const useProject = () => useContext(ProjectContext);
 
-
+export default useProject;
