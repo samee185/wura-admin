@@ -41,7 +41,7 @@ const ProjectForm = ({ onSubmit, loading }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white shadow-xl rounded-2xl p-6 w-full max-w-2xl mx-auto space-y-6 border border-gray-100"
+      className="bg-white shadow-xl rounded-2xl px-6 pt-20 w-full mx-auto space-y-6 border border-gray-100"
     >
       <h2 className="text-2xl font-bold text-gray-800 text-center">Create Project</h2>
 

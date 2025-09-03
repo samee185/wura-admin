@@ -1,5 +1,5 @@
 import { Edit, Trash2 } from "lucide-react";
-import Spinner from "./ui/Spinner";
+import Spinner from "./Spinner";
 
 const ProjectTable = ({ projects, loading, onEdit, onDelete }) => {
   if (loading) {

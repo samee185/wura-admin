@@ -1,35 +1,9 @@
-import { useState } from "react";
-import ViewToggle from "../components/ViewToggle";
-import BlogTable from "./BlogTable";
-import BlogGrid from "./BlogGrid";
+import React from 'react'
 
-const BlogsPage = ({ blogs, loading, onEdit, onDelete }) => {
-  const [view, setView] = useState("table");
-
+const Blogs = () => {
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Blogs</h1>
-        <ViewToggle view={view} setView={setView} />
-      </div>
+    <div>Blogs</div>
+  )
+}
 
-      {view === "table" ? (
-        <BlogTable
-          blogs={blogs}
-          loading={loading}
-          onEdit={onEdit}
-          onDelete={onDelete}
-        />
-      ) : (
-        <BlogGrid
-          blogs={blogs}
-          loading={loading}
-          onEdit={onEdit}
-          onDelete={onDelete}
-        />
-      )}
-    </div>
-  );
-};
-
-export default BlogsPage;
+export default Blogs
