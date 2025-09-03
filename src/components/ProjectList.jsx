@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Edit, Trash2 } from "lucide-react";
-import Spinner from "./Spinner";
+import Spinner from "./Spinner"; 
 
 const ProjectList = ({ projects, loading, onEdit, onDelete }) => {
   useEffect(() => {
@@ -10,7 +10,7 @@ const ProjectList = ({ projects, loading, onEdit, onDelete }) => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <Spinner size="w-12 h-12" color="border-indigo-600" />
+        <Spinner size="w-12 h-12" color="border-green-600" />
       </div>
     );
   }
@@ -57,7 +57,7 @@ const ProjectList = ({ projects, loading, onEdit, onDelete }) => {
                     <li key={i}>{obj}</li>
                   ))}
                   {project.objectives.length > 2 && (
-                    <li className="text-indigo-500">+ more</li>
+                    <li className="text-green-500">+ more</li>
                   )}
                 </ul>
               </div>
@@ -86,7 +86,7 @@ const ProjectList = ({ projects, loading, onEdit, onDelete }) => {
           <div className="p-4 border-t border-gray-100 flex items-center justify-between">
             <button
               onClick={() => onEdit(project)}
-              className="flex items-center gap-1 text-indigo-600 hover:text-indigo-800 text-sm font-medium"
+              className="flex items-center gap-1 text-green-600 hover:text-green-800 text-sm font-medium"
             >
               <Edit className="w-4 h-4" /> Edit
             </button>
