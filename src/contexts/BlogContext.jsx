@@ -119,4 +119,4 @@ export const BlogProvider = ({ children }) => {
 const useBlog = () => useContext(BlogContext);
 
 
-export default BlogContext;    
+export default useBlog;    
