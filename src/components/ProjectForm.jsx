@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ProjectForm = ({ onSubmit, loading }) => {
   const [title, setTitle] = useState("");
@@ -8,6 +9,7 @@ const ProjectForm = ({ onSubmit, loading }) => {
   const [objectives, setObjectives] = useState([]);
   const [objectiveInput, setObjectiveInput] = useState("");
   const [images, setImages] = useState([]);
+  const navigate = useNavigate();
 
   const handleAddObjective = () => {
     if (objectiveInput.trim()) {
@@ -41,8 +43,15 @@ const ProjectForm = ({ onSubmit, loading }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white shadow-xl rounded-2xl px-6 pt-20 w-full mx-auto space-y-6 border border-gray-100"
+      className="bg-white shadow-xl rounded-2xl p-6 w-full max-w-2xl mx-auto space-y-6 border border-gray-100"
     >
+      <button
+        type="button"
+        onClick={() => navigate("/projects")}
+        className="mb-4 px-4 py-2 rounded-xl bg-gray-200 text-gray-700 font-medium hover:bg-gray-300"
+      >
+        ← Back to Projects
+      </button>
       <h2 className="text-2xl font-bold text-gray-800 text-center">Create Project</h2>
 
       {/* Title */}
@@ -53,7 +62,7 @@ const ProjectForm = ({ onSubmit, loading }) => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
-          className="mt-1 w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          className="mt-1 w-full rounded-xl border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
         />
       </div>
 
@@ -65,7 +74,7 @@ const ProjectForm = ({ onSubmit, loading }) => {
           onChange={(e) => setDescription(e.target.value)}
           required
           rows="4"
-          className="mt-1 w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          className="mt-1 w-full rounded-xl border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
         />
       </div>
 
@@ -77,7 +86,7 @@ const ProjectForm = ({ onSubmit, loading }) => {
           value={date}
           onChange={(e) => setDate(e.target.value)}
           required
-          className="mt-1 w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          className="mt-1 w-full rounded-xl border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
         />
       </div>
 
@@ -87,7 +96,7 @@ const ProjectForm = ({ onSubmit, loading }) => {
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value)}
-          className="mt-1 w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          className="mt-1 w-full rounded-xl border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
         >
           <option value="ongoing">Ongoing</option>
           <option value="completed">Completed</option>
@@ -103,12 +112,12 @@ const ProjectForm = ({ onSubmit, loading }) => {
             type="text"
             value={objectiveInput}
             onChange={(e) => setObjectiveInput(e.target.value)}
-            className="flex-1 rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            className="flex-1 rounded-xl border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
           />
           <button
             type="button"
             onClick={handleAddObjective}
-            className="px-4 py-2 rounded-xl bg-indigo-600 text-white font-medium hover:bg-indigo-700"
+            className="px-4 py-2 rounded-xl bg-green-600 text-white font-medium hover:bg-green-700"
           >
             Add
           </button>
@@ -117,7 +126,7 @@ const ProjectForm = ({ onSubmit, loading }) => {
           {objectives.map((obj, index) => (
             <div
               key={index}
-              className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full flex items-center gap-2 shadow-sm"
+              className="bg-green-100 text-green-700 px-3 py-1 rounded-full flex items-center gap-2 shadow-sm"
             >
               <span>{obj}</span>
               <button
@@ -142,7 +151,7 @@ const ProjectForm = ({ onSubmit, loading }) => {
           onChange={handleImageChange}
           className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
                      file:rounded-xl file:border-0 file:text-sm file:font-semibold
-                     file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100"
+                     file:bg-green-50 file:text-green-600 hover:file:bg-green-100"
         />
         <div className="flex flex-wrap gap-2 mt-3">
           {images.length > 0 &&
@@ -162,12 +171,11 @@ const ProjectForm = ({ onSubmit, loading }) => {
       <button
         type="submit"
         disabled={loading}
-        className="w-full py-3 rounded-xl bg-indigo-600 text-white font-bold shadow-lg hover:bg-indigo-700 disabled:opacity-50"
+        className="w-full py-3 rounded-xl bg-green-600 text-white font-bold shadow-lg hover:bg-green-700 disabled:opacity-50"
       >
         {loading ? "Creating..." : "Create Project"}
       </button>
     </form>
-  );
-};
+  )};
 
 export default ProjectForm;
