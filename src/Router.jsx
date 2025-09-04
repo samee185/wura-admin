@@ -7,9 +7,11 @@ import Event from "./pages/Event"
 import Newsletter from "./pages/Newsletter";
 import Projects from "./pages/Projects";
 import SignIn from "./pages/SignIn";    
-
-import ProjectForm from "./components/ProjectForm";
+import AddProject from "./pages/AddProject";
  
+
+
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -24,7 +26,7 @@ const router = createBrowserRouter([
           { path: "event", element: <Event /> },
           { path: "newsletter", element: <Newsletter /> },
           { path: "projects", element: <Projects /> },
-            { path: "projects/new", element: <ProjectForm onSubmit={() => {}} loading={false} /> },
+          { path: "projects/new", element: <AddProject onSubmit={() => {}} loading={false} /> },
         ],
       },
       { path: "signin", element: <SignIn /> },

@@ -43,7 +43,7 @@ const ProjectForm = ({ onSubmit, loading }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white shadow-xl rounded-2xl p-6 w-full max-w-2xl mx-auto space-y-6 border border-gray-100"
+      className="bg-white shadow-xl rounded-2xl p-6 w-full max-w-4xl mx-auto space-y-6 border border-gray-100"
     >
       <button
         type="button"
