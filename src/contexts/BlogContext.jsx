@@ -4,6 +4,10 @@ import API from "../utils/api";
 
 const BlogContext = createContext();
 
+export const useBlog = () => {
+  return useContext(BlogContext);
+};
+
 export const BlogProvider = ({ children }) => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState({
@@ -22,6 +26,8 @@ export const BlogProvider = ({ children }) => {
     try {
       const { data } = await API.get("/blogs");
       setBlogs(data);
+      console.log(data);
+      
     } catch (err) {
       setError(err.response?.data?.message || "Failed to fetch blogs");
     } finally {
@@ -116,7 +122,7 @@ export const BlogProvider = ({ children }) => {
   );
 };
 
-const useBlog = () => useContext(BlogContext);
 
 
-export default useBlog;    
+
+// ...existing code...
