@@ -18,7 +18,7 @@ const BlogProvider = ({ children }) => {
   });
   const [error, setError] = useState(null);
 
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   // Fetch all blogs
   const fetchBlogs = async () => {
@@ -29,6 +29,8 @@ const BlogProvider = ({ children }) => {
       const res = await axios.get(`${BASE_URL}/blogs`);
       if (Array.isArray(res.data.data)) {
         setBlogs(res.data.data);
+        console.log(res.data.data);
+        
       } else {
         console.error("Unexpected response:", res.data);
         setBlogs([]);

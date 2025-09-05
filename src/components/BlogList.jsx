@@ -3,7 +3,7 @@ import { useBlog } from "../contexts/BlogContext";
 
 const BlogList = () => {
   const { blogs, loading } = useBlog();
-//   console.log(blogs); 
+  console.log(blogs); 
   
 //   if (loading) {
 //     return (
@@ -29,9 +29,9 @@ const BlogList = () => {
           key={blog._id}
           className="bg-white rounded-2xl shadow-xl overflow-hidden hover:scale-105 transition-transform duration-300 border border-gray-100"
         >
-          {blog.images && (
+          {blog.image && (
             <img
-              src={blog.images[0]}
+              src={blog.image}
               alt={blog.title}
               className="w-full h-48 object-cover"
             />
@@ -41,7 +41,7 @@ const BlogList = () => {
             <p className="text-gray-600 mb-4 line-clamp-3">{blog.content}</p>
             <div className="mt-auto flex items-center justify-between">
               <span className="text-xs text-gray-400">
-                {blog.author || "Unknown Author"}
+                {blog.createdBy.firstName || "Unknown Author"}
               </span>
               <span className="text-xs text-gray-400">
                 {blog.createdAt ? new Date(blog.createdAt).toLocaleDateString() : ""}
