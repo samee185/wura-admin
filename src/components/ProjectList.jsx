@@ -1,19 +1,21 @@
 import { useEffect } from "react";
 import { Edit, Trash2 } from "lucide-react";
 import Spinner from "./Spinner"; 
+import { useProject } from "../contexts/ProjectContext";
 
-const ProjectList = ({ projects, loading, onEdit, onDelete }) => {
+const ProjectList = () => {
+    const { projects, loading, fetchProjects, deleteProject } = useProject();
   useEffect(() => {
     console.log("Fetched projects:", projects);
   }, [projects]);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <Spinner size="w-12 h-12" color="border-green-600" />
-      </div>
-    );
-  }
+//   if (loading) {
+//     return (
+//       <div className="flex justify-center items-center h-64">
+//         <Spinner size="w-12 h-12" color="border-green-600" />
+//       </div>
+//     );
+//   }
 
   if (!projects || projects.length === 0) {
     return (
