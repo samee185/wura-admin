@@ -1,8 +1,11 @@
-// src/contexts/ProjectContext.js
 import { createContext, useContext, useState, useEffect } from "react";
-import API from "../utils/api";
+import axios from "axios";
 
 const ProjectContext = createContext();
+
+
+const API_URL = import.meta.env.VITE_API_URL; 
+
 
 export const ProjectProvider = ({ children }) => {
   const [projects, setProjects] = useState([]);
@@ -14,13 +17,16 @@ export const ProjectProvider = ({ children }) => {
   });
   const [error, setError] = useState(null);
 
+  // Fetch all projects
   const fetchProjects = async () => {
     setLoading((prev) => ({ ...prev, fetch: true }));
     setError(null);
 
     try {
-      const { data } = await API.get("/projects");
-      setProjects(data);
+      const response = await axios.get(`${API_URL}/project`);
+      setProjects(response.data.data); 
+      console.log(response.data.data);
+      
     } catch (err) {
       setError(err.response?.data?.message || "Failed to fetch projects");
     } finally {
@@ -28,6 +34,7 @@ export const ProjectProvider = ({ children }) => {
     }
   };
 
+  // Create a new project
   const createProject = async (projectData) => {
     setLoading((prev) => ({ ...prev, create: true }));
     setError(null);
@@ -42,12 +49,12 @@ export const ProjectProvider = ({ children }) => {
         }
       });
 
-      const { data } = await API.post("/projects", formData, {
+      const response = await axios.post(`${API_URL}/project`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      setProjects((prev) => [...prev, data]);
-      return data;
+      setProjects((prev) => [...prev, response.data.data]);
+      return response.data.data;
     } catch (err) {
       setError(err.response?.data?.message || "Failed to create project");
       throw err;
@@ -56,6 +63,7 @@ export const ProjectProvider = ({ children }) => {
     }
   };
 
+  // Update project
   const updateProject = async (id, projectData) => {
     setLoading((prev) => ({ ...prev, update: true }));
     setError(null);
@@ -70,12 +78,14 @@ export const ProjectProvider = ({ children }) => {
         }
       });
 
-      const { data } = await API.put(`/projects/${id}`, formData, {
+      const response = await axios.put(`${API_URL}/project/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      setProjects((prev) => prev.map((p) => (p._id === id ? data : p)));
-      return data;
+      setProjects((prev) =>
+        prev.map((p) => (p._id === id ? response.data.data : p))
+      );
+      return response.data.data;
     } catch (err) {
       setError(err.response?.data?.message || "Failed to update project");
       throw err;
@@ -84,12 +94,13 @@ export const ProjectProvider = ({ children }) => {
     }
   };
 
+  // Delete project
   const deleteProject = async (id) => {
     setLoading((prev) => ({ ...prev, delete: true }));
     setError(null);
 
     try {
-      await API.delete(`/projects/${id}`);
+      await axios.delete(`${API_URL}/project/${id}`);
       setProjects((prev) => prev.filter((p) => p._id !== id));
     } catch (err) {
       setError(err.response?.data?.message || "Failed to delete project");
@@ -121,4 +132,3 @@ export const ProjectProvider = ({ children }) => {
 };
 
 export const useProject = () => useContext(ProjectContext);
- 

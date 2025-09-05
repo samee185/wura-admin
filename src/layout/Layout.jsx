@@ -5,6 +5,7 @@ import BlogProvider  from "../contexts/BlogContext";
 // import ScrollToTop from "../components/ScrollToTop";
 // import ProductProvider from "../contexts/ProductContext";
 import Sidebar from "./Sidebar";
+import { ProjectProvider } from "../contexts/ProjectContext";
 // import UserProvider from "../contexts/UserContext";
 
 const Layout = () => {
@@ -16,6 +17,7 @@ const Layout = () => {
   return (
     <AuthProvider>
         <BlogProvider>
+            <ProjectProvider>
       {/* <UserProvider> */}
         {/* <ProductProvider> */}
           {/* <ScrollToTop /> */}
@@ -38,6 +40,7 @@ const Layout = () => {
           )}
         {/* </ProductProvider>  */}
       {/* </UserProvider> */}
+          </ProjectProvider>
       </BlogProvider>
     </AuthProvider>
   );
