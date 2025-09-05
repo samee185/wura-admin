@@ -1,7 +1,7 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
 import AuthProvider from "../contexts/AuthContext";
-import { BlogProvider } from "../contexts/BlogContext";
+import BlogProvider  from "../contexts/BlogContext";
 // import ScrollToTop from "../components/ScrollToTop";
 // import ProductProvider from "../contexts/ProductContext";
 import Sidebar from "./Sidebar";

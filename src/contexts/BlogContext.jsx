@@ -1,6 +1,6 @@
 // src/contexts/BlogContext.js
 import { createContext, useContext, useState, useEffect } from "react";
-import API from "../utils/api";
+import axios from "axios";
 
 const BlogContext = createContext();
 
@@ -8,7 +8,7 @@ export const useBlog = () => {
   return useContext(BlogContext);
 };
 
-export const BlogProvider = ({ children }) => {
+const BlogProvider = ({ children }) => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState({
     fetch: false,
@@ -18,16 +18,21 @@ export const BlogProvider = ({ children }) => {
   });
   const [error, setError] = useState(null);
 
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   // Fetch all blogs
   const fetchBlogs = async () => {
     setLoading((prev) => ({ ...prev, fetch: true }));
     setError(null);
 
     try {
-      const { data } = await API.get("/blogs");
-      setBlogs(data);
-      console.log(data);
-      
+      const res = await axios.get(`${BASE_URL}/blogs`);
+      if (Array.isArray(res.data.data)) {
+        setBlogs(res.data.data);
+      } else {
+        console.error("Unexpected response:", res.data);
+        setBlogs([]);
+      }
     } catch (err) {
       setError(err.response?.data?.message || "Failed to fetch blogs");
     } finally {
@@ -35,23 +40,25 @@ export const BlogProvider = ({ children }) => {
     }
   };
 
-  // Create new blog (with optional file upload)
+  // Create new blog
   const createBlog = async (blogData) => {
     setLoading((prev) => ({ ...prev, create: true }));
     setError(null);
 
     try {
-      let formData = new FormData();
+      const formData = new FormData();
       Object.entries(blogData).forEach(([key, value]) => {
         formData.append(key, value);
       });
 
-      const { data } = await API.post("/blogs", formData, {
+      const res = await axios.post(`${BASE_URL}/blogs`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      setBlogs((prev) => [...prev, data]);
-      return data;
+      if (res.data.data) {
+        setBlogs((prev) => [...prev, res.data.data]);
+        return res.data.data;
+      }
     } catch (err) {
       setError(err.response?.data?.message || "Failed to create blog");
       throw err;
@@ -60,23 +67,27 @@ export const BlogProvider = ({ children }) => {
     }
   };
 
-  // Update blog (with optional file upload)
+  // Update blog
   const updateBlog = async (id, blogData) => {
     setLoading((prev) => ({ ...prev, update: true }));
     setError(null);
 
     try {
-      let formData = new FormData();
+      const formData = new FormData();
       Object.entries(blogData).forEach(([key, value]) => {
         formData.append(key, value);
       });
 
-      const { data } = await API.put(`/blogs/${id}`, formData, {
+      const res = await axios.put(`${BASE_URL}/blogs/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      setBlogs((prev) => prev.map((b) => (b._id === id ? data : b)));
-      return data;
+      if (res.data.data) {
+        setBlogs((prev) =>
+          prev.map((b) => (b._id === id ? res.data.data : b))
+        );
+        return res.data.data;
+      }
     } catch (err) {
       setError(err.response?.data?.message || "Failed to update blog");
       throw err;
@@ -91,8 +102,13 @@ export const BlogProvider = ({ children }) => {
     setError(null);
 
     try {
-      await API.delete(`/blogs/${id}`);
-      setBlogs((prev) => prev.filter((b) => b._id !== id));
+      const res = await axios.delete(`${BASE_URL}/blogs/${id}`);
+
+      if (res.data.success) {
+        setBlogs((prev) => prev.filter((b) => b._id !== id));
+      } else {
+        throw new Error(res.data.message || "Failed to delete blog");
+      }
     } catch (err) {
       setError(err.response?.data?.message || "Failed to delete blog");
       throw err;
@@ -122,7 +138,4 @@ export const BlogProvider = ({ children }) => {
   );
 };
 
-
-
-
-// ...existing code...
+export default BlogProvider;

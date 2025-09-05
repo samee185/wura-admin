@@ -3,13 +3,15 @@ import { useBlog } from "../contexts/BlogContext";
 
 const BlogList = () => {
   const { blogs, loading } = useBlog();
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center py-20">
-        <span className="text-lg font-semibold text-gray-500 animate-pulse">Loading blogs...</span>
-      </div>
-    );
-  }
+//   console.log(blogs); 
+  
+//   if (loading) {
+//     return (
+//       <div className="flex justify-center items-center py-20">
+//         <span className="text-lg font-semibold text-gray-500 animate-pulse">Loading blogs...</span>
+//       </div>
+//     );
+//   }
 
   if (!blogs || blogs.length === 0) {
     return (
@@ -27,9 +29,9 @@ const BlogList = () => {
           key={blog._id}
           className="bg-white rounded-2xl shadow-xl overflow-hidden hover:scale-105 transition-transform duration-300 border border-gray-100"
         >
-          {blog.image && (
+          {blog.images && (
             <img
-              src={blog.image}
+              src={blog.images[0]}
               alt={blog.title}
               className="w-full h-48 object-cover"
             />
