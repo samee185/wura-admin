@@ -1,14 +1,16 @@
 import { Edit, Trash2 } from "lucide-react";
 import Spinner from "./Spinner";
+import { useProject } from "../contexts/ProjectContext";
 
-const ProjectTable = ({ projects, loading, onEdit, onDelete }) => {
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <Spinner size="w-12 h-12" color="border-green-600" />
-      </div>
-    );
-  }
+const ProjectTable = () => {
+  const { projects, loading, fetchProjects, deleteProject } = useProject();  
+//   if (loading) {
+//     return (
+//       <div className="flex justify-center items-center h-64">
+//         <Spinner size="w-12 h-12" color="border-green-600" />
+//       </div>
+//     );
+//   }
 
   if (!projects || projects.length === 0) {
     return (
@@ -18,22 +20,22 @@ const ProjectTable = ({ projects, loading, onEdit, onDelete }) => {
 
   return (
     <div className="overflow-x-auto mt-6">
-      <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+      <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">
+            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600 border border-gray-300">
               Title
             </th>
-            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">
+            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600 border border-gray-300">
               Status
             </th>
-            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">
+            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600 border border-gray-300">
               Date
             </th>
-            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">
+            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600 border border-gray-200">
               Objectives
             </th>
-            <th className="px-6 py-3 text-center text-sm font-semibold text-gray-600">
+            <th className="px-6 py-3 text-center text-sm font-semibold text-gray-600 border border-gray-200">
               Actions
             </th>
           </tr>
@@ -41,10 +43,10 @@ const ProjectTable = ({ projects, loading, onEdit, onDelete }) => {
         <tbody className="divide-y divide-gray-200">
           {projects.map((project) => (
             <tr key={project._id} className="hover:bg-gray-50 transition">
-              <td className="px-6 py-4 text-sm font-medium text-gray-800">
+              <td className="px-6 py-4 text-sm font-medium text-gray-800 border border-gray-200">
                 {project.title}
               </td>
-              <td className="px-6 py-4">
+              <td className="px-6 py-4 border border-gray-200">
                 <span
                   className={`px-3 py-1 text-xs font-medium rounded-full ${
                     project.status === "ongoing"
@@ -57,10 +59,10 @@ const ProjectTable = ({ projects, loading, onEdit, onDelete }) => {
                   {project.status}
                 </span>
               </td>
-              <td className="px-6 py-4 text-sm text-gray-500">
+              <td className="px-6 py-4 text-sm text-gray-500 border border-gray-200">
                 {new Date(project.date).toLocaleDateString()}
               </td>
-              <td className="px-6 py-4 text-sm text-gray-600">
+              <td className="px-6 py-4 text-sm text-gray-600 border border-gray-300">
                 {project.objectives?.slice(0, 2).join(", ")}
                 {project.objectives?.length > 2 && (
                   <span className="text-green-500"> + more</span>

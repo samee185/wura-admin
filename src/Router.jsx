@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import PrivateRoute from "./components/PrivateRoute";
 import Layout from "./layout/Layout";
-import Home from "./pages/Home";        
+import Dashboard from "./pages/Home";        
 import Blogs from "./pages/Blogs";
 import Event from "./pages/Event"
 import Newsletter from "./pages/Newsletter";
@@ -22,7 +22,7 @@ const router = createBrowserRouter([
       {
         element: <PrivateRoute />,
         children: [
-          {path: "/", element: <Home /> },
+          {path: "/", element: <Dashboard /> },
           { path: "blogs", element: <Blogs /> },
           { path: "event", element: <Event /> },
           { path: "newsletter", element: <Newsletter /> },
