@@ -6,7 +6,7 @@ const AddProject = () => {
   const { createProject, loading } = useProject();
 
   const handleSubmit = async (formData) => {
-    await createProject(forma);
+    await createProject(formData);
   };
 
   return (
