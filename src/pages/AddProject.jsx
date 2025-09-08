@@ -3,7 +3,7 @@ import ProjectForm from '../components/ProjectForm';
 import { useProject } from '../contexts/ProjectContext';
 
 const AddProject = () => {
-  const { createProject, loading } = useProject();
+  const { createProjt, loading } = useProject();
 
   const handleSubmit = async (formData) => {
     await createProject(formData);
