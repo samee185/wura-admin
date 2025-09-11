@@ -46,7 +46,7 @@ const BlogForm = ({ onSubmit, loading }) => {
       </button>
       <h5 className="text-xl text-center font-bold mb-6">Create Blog Post</h5>
 
-      <form onSubmit={formik.handleSubmit} className="space-y-6">
+      <form onSubmit={formik.handleSubmit} className="space-y-6"> 
         {/* Title */}
         <div>
           <label className="block text-gray-700 font-medium mb-2">

@@ -48,6 +48,7 @@ export const ProjectProvider = ({ children }) => {
           formData.append(key, value);
         }
       });
+      console.log(formData);
 
       const response = await axios.post(`${API_URL}/project`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
