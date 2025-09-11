@@ -53,10 +53,14 @@ const BlogProvider = ({ children }) => {
         formData.append(key, value);
       });
       const token = localStorage.getItem("token");
+      console.log(token);
+      
 
       const res = await axios.post(`${BASE_URL}/blogs`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-        Authorization: `Bearer ${token}`,
+        headers: { "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`
+        },
+        
       });
 
       if (res.data.data) {
