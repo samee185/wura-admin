@@ -109,9 +109,9 @@ const ProjectForm = () => {
           onChange={(e) => setStatus(e.target.value)}
           className="mt-1 w-full rounded-xl border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
         >
-          <option value="Ongoing">Ongoing</option>
-          <option value="Completed">Completed</option>
-          <option value="Cancelled">Cancelled</option>
+          <option value="ongoing">Ongoing</option>
+          <option value="completed">Completed</option>
+          <option value="cancelled">Cancelled</option>
         </select>
       </div>
 

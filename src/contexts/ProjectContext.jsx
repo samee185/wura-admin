@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const ProjectContext = createContext();
 
@@ -54,9 +55,8 @@ export const ProjectProvider = ({ children }) => {
 
     formData.append("status", projectData.status);
 
-    if (Array.isArray(projectData.objectives)) {
-      formData.append("objectives", JSON.stringify(projectData.objectives));
-    }
+    projectData.objectives.forEach(obj => formData.append("objectives[]", obj));
+
 
     if (Array.isArray(projectData.images)) {
       projectData.images.forEach((file) => formData.append("images", file));
@@ -75,9 +75,11 @@ export const ProjectProvider = ({ children }) => {
     });
 
     setProjects((prev) => [...prev, response.data.data]);
+    toast.success("Project created successfully");
     return response.data.data;
   } catch (err) {
     setError(err.response?.data?.message || "Failed to create project");
+    toast.error(err.response?.data?.message || "Failed to create project");
     throw err;
   } finally {
     setLoading((prev) => ({ ...prev, create: false }));
