@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const BlogContext = createContext();
 
@@ -58,9 +59,11 @@ const BlogProvider = ({ children }) => {
     if (res.data.data) {
       setBlogs((prev) => [...prev, res.data.data]);
       return res.data.data;
+      toast.success("Blog created successfully");
     }
   } catch (err) {
     setError(err.response?.data?.message || "Failed to create blog");
+    toast.error(err.response?.data?.message || "Failed to create blog");
     throw err;
   } finally {
     setLoading((prev) => ({ ...prev, create: false }));

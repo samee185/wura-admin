@@ -4,28 +4,23 @@ import { useState } from "react";
 import { Upload, X } from "lucide-react"; 
 import Spinner from "./Spinner";
 import { useNavigate } from "react-router-dom";
+import { useBlog } from "../contexts/BlogContext";
 
 const BlogForm = ({ onSubmit, loading }) => {
   const [file, setFile] = useState(null);
   const navigate = useNavigate();
-
+  const { createBlog,loading } = useBlog();
   const formik = useFormik({
     initialValues: {
       title: "",
       content: "",
-    },
+    }, 
     validationSchema: Yup.object({
       title: Yup.string().required("Title is required"),
       content: Yup.string().required("Content is required"),
     }),
     onSubmit: (values) => {
-      const formData = new FormData();
-      formData.append("title", values.title);
-      formData.append("content", values.content);
-      if (file) {
-        formData.append("image", file);
-      }
-      onSubmit(formData);
+      createBlog({ ...values, file });
     },
   });
 
