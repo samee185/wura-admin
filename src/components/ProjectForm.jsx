@@ -10,8 +10,9 @@ const ProjectForm = () => {
   const [objectives, setObjectives] = useState([]);
   const [objectiveInput, setObjectiveInput] = useState("");
   const [images, setImages] = useState([]);
+
   const navigate = useNavigate();
-  const { createProject,loading } = useProject();
+  const { createProject, loading } = useProject();
 
   // Add objective to list
   const handleAddObjective = () => {
@@ -33,7 +34,7 @@ const ProjectForm = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const projectData = {
@@ -45,9 +46,23 @@ const ProjectForm = () => {
       images,
     };
 
-    console.log("Submitting projectData:", projectData);
+    try {
+      await createProject(projectData);
 
-    createProject(projectData);
+      // ✅ Reset form after successful creation
+      setTitle("");
+      setDescription("");
+      setDate("");
+      setStatus("Ongoing");
+      setObjectives([]);
+      setObjectiveInput("");
+      setImages([]);
+
+      // (Optional) redirect
+      // navigate("/projects");
+    } catch (error) {
+      console.error("Failed to create project:", error);
+    }
   };
 
   return (
@@ -109,9 +124,9 @@ const ProjectForm = () => {
           onChange={(e) => setStatus(e.target.value)}
           className="mt-1 w-full rounded-xl border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
         >
-          <option value="ongoing">Ongoing</option>
-          <option value="completed">Completed</option>
-          <option value="cancelled">Cancelled</option>
+          <option value="Ongoing">Ongoing</option>
+          <option value="Completed">Completed</option>
+          <option value="Cancelled">Cancelled</option>
         </select>
       </div>
 
@@ -181,10 +196,10 @@ const ProjectForm = () => {
       {/* Submit */}
       <button
         type="submit"
-        disabled={loading}
+        disabled={loading.create}
         className="w-full py-3 rounded-xl bg-green-600 text-white font-bold shadow-lg hover:bg-green-700"
       >
-        { loading ? "Creating..." : "Create Project" }
+        {loading.create ? "Creating..." : "Create Project"}
       </button>
     </form>
   );
