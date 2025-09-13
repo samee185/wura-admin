@@ -36,33 +36,55 @@ export const ProjectProvider = ({ children }) => {
 
   // Create a new project
   const createProject = async (projectData) => {
-    setLoading((prev) => ({ ...prev, create: true }));
-    setError(null);
+  setLoading((prev) => ({ ...prev, create: true }));
+  setError(null);
 
-    try {
-      let formData = new FormData();
-      Object.entries(projectData).forEach(([key, value]) => {
-        if (Array.isArray(value)) {
-          value.forEach((file) => formData.append("images", file));
-        } else {
-          formData.append(key, value);
-        }
-      });
-      console.log(formData);
+  try {
+    let formData = new FormData();
 
-      const response = await axios.post(`${API_URL}/project`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+    formData.append("title", projectData.title);
+    formData.append("description", projectData.description);
 
-      setProjects((prev) => [...prev, response.data.data]);
-      return response.data.data;
-    } catch (err) {
-      setError(err.response?.data?.message || "Failed to create project");
-      throw err;
-    } finally {
-      setLoading((prev) => ({ ...prev, create: false }));
+    if (projectData.date) {
+      const formattedDate = new Date(projectData.date);
+      if (!isNaN(formattedDate)) {
+        formData.append("date", formattedDate.toISOString()); 
+      }
     }
-  };
+
+    formData.append("status", projectData.status);
+
+    if (Array.isArray(projectData.objectives)) {
+      formData.append("objectives", JSON.stringify(projectData.objectives));
+    }
+
+    if (Array.isArray(projectData.images)) {
+      projectData.images.forEach((file) => formData.append("images", file));
+    }
+
+
+    console.log("==== FormData Contents ====");
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+    console.log("==========================");
+
+    const token = localStorage.getItem("token");
+    const response = await axios.post(`${API_URL}/project`, formData, {
+      headers: { Authorization : `Bearer ${token}` }, // ✅ no Content-Type
+    });
+
+    setProjects((prev) => [...prev, response.data.data]);
+    return response.data.data;
+  } catch (err) {
+    setError(err.response?.data?.message || "Failed to create project");
+    throw err;
+  } finally {
+    setLoading((prev) => ({ ...prev, create: false }));
+  }
+};
+
+
 
   // Update project
   const updateProject = async (id, projectData) => {

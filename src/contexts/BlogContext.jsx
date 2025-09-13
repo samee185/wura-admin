@@ -1,4 +1,3 @@
-// src/contexts/BlogContext.js
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 
@@ -43,37 +42,31 @@ const BlogProvider = ({ children }) => {
   };
 
   // Create new blog
-  const createBlog = async (blogData) => {
-    setLoading((prev) => ({ ...prev, create: true }));
-    setError(null);
+  const createBlog = async (formData) => {
+  setLoading((prev) => ({ ...prev, create: true }));
+  setError(null);
 
-    try {
-      const formData = new FormData();
-      Object.entries(blogData).forEach(([key, value]) => {
-        formData.append(key, value);
-      });
-      const token = localStorage.getItem("token");
-      console.log(token);
-      
+  try {
+    const token = localStorage.getItem("token");
 
-      const res = await axios.post(`${BASE_URL}/blogs`, formData, {
-        headers: { "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`
-        },
-        
-      });
+    const res = await axios.post(`${BASE_URL}/blogs`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-      if (res.data.data) {
-        setBlogs((prev) => [...prev, res.data.data]);
-        return res.data.data;
-      }
-    } catch (err) {
-      setError(err.response?.data?.message || "Failed to create blog");
-      throw err;
-    } finally {
-      setLoading((prev) => ({ ...prev, create: false }));
+    if (res.data.data) {
+      setBlogs((prev) => [...prev, res.data.data]);
+      return res.data.data;
     }
-  };
+  } catch (err) {
+    setError(err.response?.data?.message || "Failed to create blog");
+    throw err;
+  } finally {
+    setLoading((prev) => ({ ...prev, create: false }));
+  }
+};
+
 
   // Update blog
   const updateBlog = async (id, blogData) => {
