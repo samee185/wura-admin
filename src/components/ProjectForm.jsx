@@ -11,7 +11,7 @@ const ProjectForm = () => {
   const [objectiveInput, setObjectiveInput] = useState("");
   const [images, setImages] = useState([]);
   const navigate = useNavigate();
-  const { createProject } = useProject();
+  const { createProject,loading } = useProject();
 
   // Add objective to list
   const handleAddObjective = () => {
@@ -181,9 +181,10 @@ const ProjectForm = () => {
       {/* Submit */}
       <button
         type="submit"
+        disabled={loading}
         className="w-full py-3 rounded-xl bg-green-600 text-white font-bold shadow-lg hover:bg-green-700"
       >
-        Create
+        { loading ? "Creating..." : "Create Project" }
       </button>
     </form>
   );
