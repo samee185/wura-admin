@@ -58,8 +58,8 @@ const ProjectForm = () => {
       setObjectiveInput("");
       setImages([]);
 
-      // (Optional) redirect
-      // navigate("/projects");
+      
+      navigate("/projects");
     } catch (error) {
       console.error("Failed to create project:", error);
     }
