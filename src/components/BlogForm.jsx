@@ -26,14 +26,14 @@ const BlogForm = () => {
       formData.append("content", values.content);
 
       if (file) {
-        formData.append("image", file); // 👈 backend expects "image"
+        formData.append("images", file); 
       }
 
       try {
         await createBlog(formData);
-        navigate("/blogs"); // redirect after success
+        navigate("/blogs"); 
       } catch (err) {
-        // error already handled by toast in context
+        
       }
     },
   });
