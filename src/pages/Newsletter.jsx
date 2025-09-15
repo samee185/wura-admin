@@ -2,7 +2,7 @@ import React from 'react'
 
 const Newsletter = () => {
   return (
-    <div>Newsletter</div>
+    <div className='pt-26 text-3xl'>No subscribers yet </div>
   )
 }
 

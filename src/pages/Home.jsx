@@ -2,10 +2,12 @@
 import { useProject } from "../contexts/ProjectContext";
 import { useBlog } from "../contexts/BlogContext";
 import { FolderKanban, BookOpen, Users, DollarSign } from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Dashboard() {
   const { projects } = useProject();
   const { blogs } = useBlog();
+  const { user } = useAuth();
 
   const stats = [
     {
@@ -22,22 +24,22 @@ export default function Dashboard() {
     },
     {
       label: "Active Users",
-      value: 120,
+      value: 3,
       color: "green",
       icon: <Users className="w-8 h-8 text-green-600" />,
     },
     {
-      label: "Revenue",
-      value: "₦250k",
+      label: "Donations",
+      value: "---",
       color: "yellow",
       icon: <DollarSign className="w-8 h-8 text-yellow-600" />,
     },
   ];
 
   return (
-    <div className="p-6 space-y-10">
+    <div className="pt-20 px-6 space-y-10">
       {/* Page Title */}
-      <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
+      <h1 className="text-2xl font-bold text-gray-800">Welcome back, {user.firstName}</h1>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -61,7 +63,7 @@ export default function Dashboard() {
       <div>
         <h2 className="text-xl font-semibold mb-4">Latest Projects</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.slice(0, 6).map((p) => (
+          {projects.slice(0, 3).map((p) => (
             <div
               key={p._id}
               className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition"
@@ -97,7 +99,7 @@ export default function Dashboard() {
       <div>
         <h2 className="text-xl font-semibold mb-4">Latest Blogs</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {blogs.slice(0, 6).map((b) => (
+          {blogs.slice(0, 3).map((b) => (
             <div
               key={b._id}
               className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition"
