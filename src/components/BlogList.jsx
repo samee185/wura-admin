@@ -3,7 +3,7 @@ import { useBlog } from "../contexts/BlogContext";
 
 const BlogList = () => {
   const { blogs, loading } = useBlog();
-  console.log(blogs); 
+  // console.log(blogs); 
   
 //   if (loading) {
 //     return (

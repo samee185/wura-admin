@@ -1,26 +1,40 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useState } from "react";
-import { Upload, X } from "lucide-react"; 
+import { Upload, X } from "lucide-react";
 import Spinner from "./Spinner";
 import { useNavigate } from "react-router-dom";
 import { useBlog } from "../contexts/BlogContext";
 
-const BlogForm = ({ onSubmit, loading }) => {
+const BlogForm = () => {
   const [file, setFile] = useState(null);
   const navigate = useNavigate();
-  const { createBlog,loading } = useBlog();
+  const { createBlog, loading } = useBlog();
+
   const formik = useFormik({
     initialValues: {
       title: "",
       content: "",
-    }, 
+    },
     validationSchema: Yup.object({
       title: Yup.string().required("Title is required"),
       content: Yup.string().required("Content is required"),
     }),
-    onSubmit: (values) => {
-      createBlog({ ...values, file });
+    onSubmit: async (values) => {
+      const formData = new FormData();
+      formData.append("title", values.title);
+      formData.append("content", values.content);
+
+      if (file) {
+        formData.append("image", file); // 👈 backend expects "image"
+      }
+
+      try {
+        await createBlog(formData);
+        navigate("/blogs"); // redirect after success
+      } catch (err) {
+        // error already handled by toast in context
+      }
     },
   });
 
@@ -41,7 +55,7 @@ const BlogForm = ({ onSubmit, loading }) => {
       </button>
       <h5 className="text-xl text-center font-bold mb-6">Create Blog Post</h5>
 
-      <form onSubmit={formik.handleSubmit} className="space-y-6"> 
+      <form onSubmit={formik.handleSubmit} className="space-y-6">
         {/* Title */}
         <div>
           <label className="block text-gray-700 font-medium mb-2">
@@ -84,7 +98,9 @@ const BlogForm = ({ onSubmit, loading }) => {
             } rounded-xl focus:ring-2 focus:ring-green-700 focus:outline-none`}
           />
           {formik.touched.content && formik.errors.content && (
-            <p className="mt-2 text-sm text-red-500">{formik.errors.content}</p>
+            <p className="mt-2 text-sm text-red-500">
+              {formik.errors.content}
+            </p>
           )}
         </div>
 
@@ -130,10 +146,14 @@ const BlogForm = ({ onSubmit, loading }) => {
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading.create}
           className="w-full flex items-center justify-center px-6 py-3 bg-green-700 text-white font-semibold rounded-xl hover:bg-red-500 disabled:opacity-50"
         >
-          {loading ? <Spinner className="h-5 w-5" color="border-white" /> : "Publish Blog"}
+          {loading.create ? (
+            <Spinner className="h-5 w-5" color="border-white" />
+          ) : (
+            "Publish Blog"
+          )}
         </button>
       </form>
     </div>

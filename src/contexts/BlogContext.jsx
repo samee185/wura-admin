@@ -29,7 +29,7 @@ const BlogProvider = ({ children }) => {
       const res = await axios.get(`${BASE_URL}/blogs`);
       if (Array.isArray(res.data.data)) {
         setBlogs(res.data.data);
-        console.log(res.data.data);
+        // console.log(res.data.data);
         
       } else {
         console.error("Unexpected response:", res.data);
@@ -52,6 +52,7 @@ const BlogProvider = ({ children }) => {
 
     const res = await axios.post(`${BASE_URL}/blogs`, formData, {
       headers: {
+        "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
       },
     });
@@ -59,8 +60,8 @@ const BlogProvider = ({ children }) => {
     if (res.data.data) {
       setBlogs((prev) => [...prev, res.data.data]);
       return res.data.data;
-      toast.success("Blog created successfully");
     }
+    toast.success("Blog created successfully");
   } catch (err) {
     setError(err.response?.data?.message || "Failed to create blog");
     toast.error(err.response?.data?.message || "Failed to create blog");
