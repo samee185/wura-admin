@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const EventContext = createContext();
 
@@ -64,9 +65,11 @@ export const EventProvider = ({ children }) => {
       });
 
       setEvents((prev) => [...prev, data]);
+      toast.success("Event created successfully");
       return data;
     } catch (err) {
       setError(err.response?.data?.message || "Failed to create event");
+      toast.error(err.response?.data?.message || "Failed to create event");
       throw err;
     } finally {
       setLoading((prev) => ({ ...prev, create: false }));

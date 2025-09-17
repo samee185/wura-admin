@@ -36,7 +36,7 @@ const EventForm = () => {
         };
 
         await createEvent(eventData);
-        navigate("/events"); // redirect to events list
+        navigate("/event"); 
       } catch (err) {
         console.error("Event creation failed", err);
       }
