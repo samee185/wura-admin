@@ -14,7 +14,7 @@ export const EventProvider = ({ children }) => {
   });
   const [error, setError] = useState(null);
 
-  const BASE_URL = import.meta.env.VITE_API_URL 
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   // Fetch events
   const fetchEvents = async () => {
@@ -23,9 +23,12 @@ export const EventProvider = ({ children }) => {
 
     try {
       const { data } = await axios.get(`${BASE_URL}/event`);
-      setEvents(data);
+      // ✅ Extract only the array from API response
+      setEvents(Array.isArray(data.data) ? data.data : []);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to fetch events");
+      toast.error(err.response?.data?.message || "Failed to fetch events");
+      setEvents([]); // fallback to empty array
     } finally {
       setLoading((prev) => ({ ...prev, fetch: false }));
     }
@@ -54,7 +57,9 @@ export const EventProvider = ({ children }) => {
       if (Array.isArray(eventData.images)) {
         eventData.images.forEach((img) => formData.append("images", img));
       }
+
       formData.append("aboutEvent", eventData.aboutEvent);
+
       const token = localStorage.getItem("token");
 
       const { data } = await axios.post(`${BASE_URL}/event`, formData, {
@@ -64,7 +69,8 @@ export const EventProvider = ({ children }) => {
         },
       });
 
-      setEvents((prev) => [...prev, data]);
+      // ✅ Append new event properly
+      setEvents((prev) => [...prev, data.data || data]);
       toast.success("Event created successfully");
       return data;
     } catch (err) {
@@ -100,10 +106,15 @@ export const EventProvider = ({ children }) => {
         },
       });
 
-      setEvents((prev) => prev.map((e) => (e._id === id ? data : e)));
+      setEvents((prev) =>
+        prev.map((e) => (e._id === id ? data.data || data : e))
+      );
+
+      toast.success("Event updated successfully");
       return data;
     } catch (err) {
       setError(err.response?.data?.message || "Failed to update event");
+      toast.error(err.response?.data?.message || "Failed to update event");
       throw err;
     } finally {
       setLoading((prev) => ({ ...prev, update: false }));
@@ -123,8 +134,10 @@ export const EventProvider = ({ children }) => {
       });
 
       setEvents((prev) => prev.filter((e) => e._id !== id));
+      toast.success("Event deleted successfully");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to delete event");
+      toast.error(err.response?.data?.message || "Failed to delete event");
       throw err;
     } finally {
       setLoading((prev) => ({ ...prev, delete: false }));
@@ -143,7 +156,7 @@ export const EventProvider = ({ children }) => {
         error,
         fetchEvents,
         createEvent,
-        updateEvent,
+        updateEvent,  
         deleteEvent,
       }}
     >

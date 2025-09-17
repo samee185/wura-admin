@@ -9,6 +9,8 @@ import Projects from "./pages/Projects";
 import SignIn from "./pages/SignIn";    
 import AddProject from "./pages/AddProject";
 import AddBlog from "./pages/AddBlog";
+import EventsPage from "./pages/Event";
+import EventForm from "./components/EventForm";
  
 
 
@@ -24,7 +26,8 @@ const router = createBrowserRouter([
         children: [
           {path: "/", element: <Dashboard /> },
           { path: "blogs", element: <Blogs /> },
-          { path: "event", element: <Event /> },
+          { path: "event", element: <EventsPage /> },
+          { path: "event/new", element: <EventForm /> },
           { path: "newsletter", element: <Newsletter /> },
           { path: "projects", element: <Projects /> },
           { path: "projects/new", element: <AddProject onSubmit={() => {}} loading={false} /> },
