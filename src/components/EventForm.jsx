@@ -4,10 +4,10 @@ import { useState } from "react";
 import { Upload, X } from "lucide-react";
 import Spinner from "./Spinner";
 import { useNavigate } from "react-router-dom";
-import { useEvent } from "../contexts/EventContext";
+import  useEvent  from "../contexts/EventContext";
 
 const EventForm = () => {
-  const [file, setFile] = useState(null);
+  const [files, setFiles] = useState([]);
   const navigate = useNavigate();
   const { createEvent, loading } = useEvent();
 
@@ -15,56 +15,61 @@ const EventForm = () => {
     initialValues: {
       title: "",
       description: "",
+      date: "",
+      time: "",
+      venue: "",
+      aboutEvent: "",
     },
     validationSchema: Yup.object({
       title: Yup.string().required("Title is required"),
-      content: Yup.string().required("Content is required"),
+      description: Yup.string().required("Description is required"),
+      date: Yup.date().required("Date is required"),
+      time: Yup.string().required("Time is required"),
+      venue: Yup.string().required("Venue is required"),
+      aboutEvent: Yup.string().required("About event is required"),
     }),
     onSubmit: async (values) => {
-      const formData = new FormData();
-      formData.append("title", values.title);
-      formData.append("content", values.content);
-
-      if (file) {
-        formData.append("images", file); 
-      }
-
       try {
-        await createBlog(formData);
-        navigate("/blogs"); 
+        const eventData = {
+          ...values,
+          images: files,
+        };
+
+        await createEvent(eventData);
+        navigate("/events"); // redirect to events list
       } catch (err) {
-        
+        console.error("Event creation failed", err);
       }
     },
   });
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    setFiles(Array.from(e.target.files));
   };
 
-  const removeFile = () => setFile(null);
+  const removeFile = (index) => {
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+  };
 
   return (
     <div className="w-full mx-auto p-6 bg-white rounded-2xl shadow-lg">
       <button
         type="button"
-        onClick={() => navigate("/blogs")}
+        onClick={() => navigate("/event")}
         className="mb-4 px-4 py-2 rounded-xl bg-gray-200 text-gray-700 font-medium hover:bg-gray-300"
       >
-        ← Back to Blogs
+        ← Back to Events
       </button>
-      <h5 className="text-xl text-center font-bold mb-6">Create Blog Post</h5>
+      <h5 className="text-xl text-center font-bold mb-6">Create Event</h5>
 
       <form onSubmit={formik.handleSubmit} className="space-y-6">
         {/* Title */}
         <div>
-          <label className="block text-gray-700 font-medium mb-2">
-            Blog Title
-          </label>
+          <label className="block text-gray-700 font-medium mb-2">Event Title</label>
           <input
             type="text"
             name="title"
-            placeholder="Enter blog title"
+            placeholder="Enter event title"
             value={formik.values.title}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -79,67 +84,139 @@ const EventForm = () => {
           )}
         </div>
 
-        {/* Content */}
+        {/* Description */}
         <div>
-          <label className="block text-gray-700 font-medium mb-2">
-            Content
-          </label>
+          <label className="block text-gray-700 font-medium mb-2">Description</label>
           <textarea
-            name="content"
-            placeholder="Write your blog content..."
-            rows="6"
-            value={formik.values.content}
+            name="description"
+            placeholder="Write a short description..."
+            rows="4"
+            value={formik.values.description}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             className={`w-full px-4 py-3 border ${
-              formik.touched.content && formik.errors.content
+              formik.touched.description && formik.errors.description
                 ? "border-red-500"
                 : "border-gray-300"
             } rounded-xl focus:ring-2 focus:ring-green-700 focus:outline-none`}
           />
-          {formik.touched.content && formik.errors.content && (
-            <p className="mt-2 text-sm text-red-500">
-              {formik.errors.content}
-            </p>
+          {formik.touched.description && formik.errors.description && (
+            <p className="mt-2 text-sm text-red-500">{formik.errors.description}</p>
+          )}
+        </div>
+
+        {/* Date & Time */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">Date</label>
+            <input
+              type="date"
+              name="date"
+              value={formik.values.date}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className={`w-full px-4 py-3 border ${
+                formik.touched.date && formik.errors.date
+                  ? "border-red-500"
+                  : "border-gray-300"
+              } rounded-xl focus:ring-2 focus:ring-green-700 focus:outline-none`}
+            />
+            {formik.touched.date && formik.errors.date && (
+              <p className="mt-2 text-sm text-red-500">{formik.errors.date}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">Time</label>
+            <input
+              type="text"
+              name="time"
+              placeholder="e.g. 4:00 PM"
+              value={formik.values.time}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className={`w-full px-4 py-3 border ${
+                formik.touched.time && formik.errors.time
+                  ? "border-red-500"
+                  : "border-gray-300"
+              } rounded-xl focus:ring-2 focus:ring-green-700 focus:outline-none`}
+            />
+            {formik.touched.time && formik.errors.time && (
+              <p className="mt-2 text-sm text-red-500">{formik.errors.time}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Venue */}
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">Venue</label>
+          <input
+            type="text"
+            name="venue"
+            placeholder="Enter venue"
+            value={formik.values.venue}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            className={`w-full px-4 py-3 border ${
+              formik.touched.venue && formik.errors.venue
+                ? "border-red-500"
+                : "border-gray-300"
+            } rounded-xl focus:ring-2 focus:ring-green-700 focus:outline-none`}
+          />
+          {formik.touched.venue && formik.errors.venue && (
+            <p className="mt-2 text-sm text-red-500">{formik.errors.venue}</p>
+          )}
+        </div>
+
+        {/* About Event */}
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">About Event</label>
+          <textarea
+            name="aboutEvent"
+            placeholder="Write more details about the event..."
+            rows="5"
+            value={formik.values.aboutEvent}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            className={`w-full px-4 py-3 border ${
+              formik.touched.aboutEvent && formik.errors.aboutEvent
+                ? "border-red-500"
+                : "border-gray-300"
+            } rounded-xl focus:ring-2 focus:ring-green-700 focus:outline-none`}
+          />
+          {formik.touched.aboutEvent && formik.errors.aboutEvent && (
+            <p className="mt-2 text-sm text-red-500">{formik.errors.aboutEvent}</p>
           )}
         </div>
 
         {/* File Upload */}
         <div>
           <label className="block text-gray-700 font-medium mb-2">
-            Upload Cover Image
+            Upload Event Images
           </label>
-          <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:border-green-700 transition">
-            {!file ? (
-              <>
-                <Upload className="w-8 h-8 text-gray-400 mb-2" />
-                <p className="text-gray-500">Drag & drop or click to upload</p>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="hidden"
-                  id="file-upload"
-                />
-                <label
-                  htmlFor="file-upload"
-                  className="mt-3 px-4 py-2 bg-green-700 text-white rounded-lg cursor-pointer hover:bg-red-500"
-                >
-                  Choose File
-                </label>
-              </>
-            ) : (
-              <div className="flex items-center space-x-3">
-                <p className="text-gray-700">{file.name}</p>
+          <input
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleFileChange}
+            className="block w-full text-gray-700"
+          />
+          <div className="mt-3 flex flex-wrap gap-3">
+            {files.map((file, index) => (
+              <div
+                key={index}
+                className="flex items-center bg-gray-100 px-3 py-1 rounded-lg"
+              >
+                <span className="text-sm text-gray-600">{file.name}</span>
                 <button
                   type="button"
-                  onClick={removeFile}
-                  className="text-red-500 hover:text-red-700"
+                  onClick={() => removeFile(index)}
+                  className="ml-2 text-red-500 hover:text-red-700"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
-            )}
+            ))}
           </div>
         </div>
 
@@ -152,7 +229,7 @@ const EventForm = () => {
           {loading.create ? (
             <Spinner className="h-5 w-5" color="border-white" />
           ) : (
-            "Publish Blog"
+            "Create Event"
           )}
         </button>
       </form>

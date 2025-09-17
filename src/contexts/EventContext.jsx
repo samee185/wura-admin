@@ -21,7 +21,7 @@ export const EventProvider = ({ children }) => {
     setError(null);
 
     try {
-      const { data } = await axios.get(`${BASE_URL}/events`);
+      const { data } = await axios.get(`${BASE_URL}/event`);
       setEvents(data);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to fetch events");
@@ -56,7 +56,7 @@ export const EventProvider = ({ children }) => {
 
       const token = localStorage.getItem("token");
 
-      const { data } = await axios.post(`${BASE_URL}/events`, formData, {
+      const { data } = await axios.post(`${BASE_URL}/event`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -90,7 +90,7 @@ export const EventProvider = ({ children }) => {
 
       const token = localStorage.getItem("token");
 
-      const { data } = await axios.put(`${BASE_URL}/events/${id}`, formData, {
+      const { data } = await axios.put(`${BASE_URL}/event/${id}`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -115,7 +115,7 @@ export const EventProvider = ({ children }) => {
     try {
       const token = localStorage.getItem("token");
 
-      await axios.delete(`${BASE_URL}/events/${id}`, {
+      await axios.delete(`${BASE_URL}/event/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
