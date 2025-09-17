@@ -1,6 +1,5 @@
-// src/contexts/EventContext.js
 import { createContext, useContext, useState, useEffect } from "react";
-import API from "../utils/api";
+import axios from "axios";
 
 const EventContext = createContext();
 
@@ -14,12 +13,15 @@ export const EventProvider = ({ children }) => {
   });
   const [error, setError] = useState(null);
 
+  const BASE_URL = import.meta.env.VITE_API_URL 
+
+  // Fetch events
   const fetchEvents = async () => {
     setLoading((prev) => ({ ...prev, fetch: true }));
     setError(null);
 
     try {
-      const { data } = await API.get("/events");
+      const { data } = await axios.get(`${BASE_URL}/events`);
       setEvents(data);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to fetch events");
@@ -28,18 +30,37 @@ export const EventProvider = ({ children }) => {
     }
   };
 
+  // Create event
   const createEvent = async (eventData) => {
     setLoading((prev) => ({ ...prev, create: true }));
     setError(null);
 
     try {
       let formData = new FormData();
-      Object.entries(eventData).forEach(([key, value]) => {
-        formData.append(key, value);
-      });
+      formData.append("title", eventData.title);
+      formData.append("description", eventData.description);
 
-      const { data } = await API.post("/events", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      if (eventData.date) {
+        const formattedDate = new Date(eventData.date);
+        if (!isNaN(formattedDate)) {
+          formData.append("date", formattedDate.toISOString());
+        }
+      }
+
+      formData.append("venue", eventData.venue);
+      formData.append("time", eventData.time);
+
+      if (Array.isArray(eventData.images)) {
+        eventData.images.forEach((img) => formData.append("images", img));
+      }
+
+      const token = localStorage.getItem("token");
+
+      const { data } = await axios.post(`${BASE_URL}/events`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
       });
 
       setEvents((prev) => [...prev, data]);
@@ -52,6 +73,7 @@ export const EventProvider = ({ children }) => {
     }
   };
 
+  // Update event
   const updateEvent = async (id, eventData) => {
     setLoading((prev) => ({ ...prev, update: true }));
     setError(null);
@@ -59,11 +81,20 @@ export const EventProvider = ({ children }) => {
     try {
       let formData = new FormData();
       Object.entries(eventData).forEach(([key, value]) => {
-        formData.append(key, value);
+        if (Array.isArray(value)) {
+          value.forEach((v) => formData.append(key, v));
+        } else {
+          formData.append(key, value);
+        }
       });
 
-      const { data } = await API.put(`/events/${id}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const token = localStorage.getItem("token");
+
+      const { data } = await axios.put(`${BASE_URL}/events/${id}`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
       });
 
       setEvents((prev) => prev.map((e) => (e._id === id ? data : e)));
@@ -76,12 +107,18 @@ export const EventProvider = ({ children }) => {
     }
   };
 
+  // Delete event
   const deleteEvent = async (id) => {
     setLoading((prev) => ({ ...prev, delete: true }));
     setError(null);
 
     try {
-      await API.delete(`/events/${id}`);
+      const token = localStorage.getItem("token");
+
+      await axios.delete(`${BASE_URL}/events/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
       setEvents((prev) => prev.filter((e) => e._id !== id));
     } catch (err) {
       setError(err.response?.data?.message || "Failed to delete event");
