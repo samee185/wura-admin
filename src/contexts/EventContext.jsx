@@ -53,7 +53,7 @@ export const EventProvider = ({ children }) => {
       if (Array.isArray(eventData.images)) {
         eventData.images.forEach((img) => formData.append("images", img));
       }
-
+      formData.append("aboutEvent", eventData.aboutEvent);
       const token = localStorage.getItem("token");
 
       const { data } = await axios.post(`${BASE_URL}/event`, formData, {
