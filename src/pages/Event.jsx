@@ -2,10 +2,12 @@ import React, { useEffect } from "react";
 import useEvent from "../contexts/EventContext";
 import EventList from "../components/EventList";
 import EventTable from "../components/EventTable";
+import { useNavigate } from "react-router-dom";
 
 const EventPage = () => {
   const { events, fetchEvents } = useEvent();
   const [view, setView] = React.useState("grid"); // "grid" or "table"
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchEvents();
@@ -19,7 +21,7 @@ const EventPage = () => {
         <div className="flex items-center gap-3">
           {/* Add Event button */}
           <button
-            onClick={() => console.log("Navigate to Add Event Page")}
+            onClick={() => navigate("/event/new")}
             className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
           >
             + Add Event
@@ -43,8 +45,6 @@ const EventPage = () => {
               Table
             </button>
           </div>
-
-          
         </div>
       </div>
 

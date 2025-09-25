@@ -52,7 +52,7 @@ const EventForm = () => {
   };
 
   return (
-    <div className="w-full mx-auto p-6 bg-white rounded-2xl shadow-lg">
+    <div className="w-full mx-auto pt-20 px-6 bg-white rounded-2xl shadow-lg">
       <button
         type="button"
         onClick={() => navigate("/event")}
