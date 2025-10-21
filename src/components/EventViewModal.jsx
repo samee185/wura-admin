@@ -4,7 +4,7 @@ const EventViewModal = ({ open, onClose, event }) => {
   if (!open || !event) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-auto p-4">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
       <div className="relative bg-white max-w-2xl w-full rounded-2xl shadow-2xl overflow-hidden">
         <div className="p-6">
@@ -32,19 +32,21 @@ const EventViewModal = ({ open, onClose, event }) => {
           )}
 
           <div className="mt-4 text-gray-700 space-y-3">
-            <p className="leading-relaxed">{event.description}</p>
+            <p className="leading-relaxed">{event?.description}</p>
+            <p className="leading-relaxed text-2xl text-center font-semibold">About Event</p>
+            <p className="leading-relaxed">{event?.aboutEvent}</p>
             <div className="flex gap-6 mt-4 text-sm text-gray-500">
               <div>
                 <div className="font-medium text-gray-600">Date</div>
-                <div>{new Date(event.date).toLocaleDateString()}</div>
+                <div>{new Date(event?.date).toLocaleDateString()}</div>
               </div>
               <div>
                 <div className="font-medium text-gray-600">Time</div>
-                <div>{event.time}</div>
+                <div>{event?.time}</div>
               </div>
               <div>
                 <div className="font-medium text-gray-600">Venue</div>
-                <div>{event.venue}</div>
+                <div>{event?.venue}</div>
               </div>
             </div>
           </div>
