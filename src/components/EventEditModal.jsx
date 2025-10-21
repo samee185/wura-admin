@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 const EventEditModal = ({ open, onClose, event, onSave, saving }) => {
-  const [form, setForm] = useState({ title: "", description: "", date: "", time: "", venue: "" });
+  const [form, setForm] = useState({ title: "", description: "", date: "", time: "", venue: "", aboutEvent: "" });
 
   useEffect(() => {
     if (event) {
@@ -11,6 +11,7 @@ const EventEditModal = ({ open, onClose, event, onSave, saving }) => {
         date: event.date ? new Date(event.date).toISOString().slice(0, 10) : "",
         time: event.time || "",
         venue: event.venue || "",
+        aboutEvent: event.aboutEvent || "",
       });
     }
   }, [event]);
@@ -34,13 +35,28 @@ const EventEditModal = ({ open, onClose, event, onSave, saving }) => {
         </div>
 
         <div className="mt-4 grid grid-cols-1 gap-4">
-          <input name="title" value={form.title} onChange={handleChange} placeholder="Title" className="border rounded-lg px-4 py-2" />
-          <textarea name="description" value={form.description} onChange={handleChange} placeholder="Description" className="border rounded-lg px-4 py-2 h-28" />
+          <div>
+            <label className="text-sm font-medium text-gray-700">Title</label>
+            <input name="title" value={form.title} onChange={handleChange} placeholder="Title" className="mt-1 w-full border rounded-lg px-4 py-2" />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-gray-700">Short Description</label>
+            <textarea name="description" value={form.description} onChange={handleChange} placeholder="Short description" className="mt-1 w-full border rounded-lg px-4 py-2 h-24" />
+          </div>
           <div className="grid grid-cols-2 gap-4">
             <input type="date" name="date" value={form.date} onChange={handleChange} className="border rounded-lg px-4 py-2" />
             <input name="time" value={form.time} onChange={handleChange} placeholder="Time" className="border rounded-lg px-4 py-2" />
           </div>
-          <input name="venue" value={form.venue} onChange={handleChange} placeholder="Venue" className="border rounded-lg px-4 py-2" />
+          <div>
+            <label className="text-sm font-medium text-gray-700">Venue</label>
+            <input name="venue" value={form.venue} onChange={handleChange} placeholder="Venue" className="mt-1 w-full border rounded-lg px-4 py-2" />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-gray-700">About Event</label>
+            <textarea name="aboutEvent" value={form.aboutEvent} onChange={handleChange} placeholder="Detailed information about the event" className="mt-1 w-full border rounded-lg px-4 py-2 h-32" />
+          </div>
         </div>
 
         <div className="mt-6 flex justify-end gap-3">
