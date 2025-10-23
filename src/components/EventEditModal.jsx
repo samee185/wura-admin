@@ -17,11 +17,12 @@ const EventEditModal = ({ open, onClose, event, onSave, saving }) => {
     }
   }, [event]);
 
+  const { updateEvent, fetchEvents, loading: ctxLoading } = useEvent();
+
   if (!open) return null;
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const { updateEvent, fetchEvents, loading: ctxLoading } = useEvent();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
