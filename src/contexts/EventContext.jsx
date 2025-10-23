@@ -99,7 +99,7 @@ export const EventProvider = ({ children }) => {
 
       const token = localStorage.getItem("token");
 
-      const { data } = await axios.put(`${BASE_URL}/event/${id}`, formData, {
+      const { data } = await axios.patch(`${BASE_URL}/event/${id}`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import useEvent from "../contexts/EventContext";
 
 const EventEditModal = ({ open, onClose, event, onSave, saving }) => {
   const [form, setForm] = useState({ title: "", description: "", date: "", time: "", venue: "", aboutEvent: "" });
@@ -20,9 +21,25 @@ const EventEditModal = ({ open, onClose, event, onSave, saving }) => {
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const { updateEvent, fetchEvents, loading: ctxLoading } = useEvent();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (onSave) onSave({ ...event, ...form });
+    if (!event) return;
+
+    try {
+      // call context updateEvent which handles formdata/upload
+      const res = await updateEvent(event._id, form);
+      const updated = res?.data || res;
+      // refresh events from server to ensure consistency
+      await fetchEvents();
+      // notify parent if provided
+      if (onSave) await onSave(updated);
+      // close modal on success
+      onClose();
+    } catch (err) {
+      // error handling is done in context (toast), nothing else here
+    }
   };
 
   return (
