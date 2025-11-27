@@ -33,7 +33,7 @@ const EventEditModal = ({ open, onClose, event, onSave, saving }) => {
       const res = await updateEvent(event._id, form);
       const updated = res?.data || res;
       // refresh events from server to ensure consistency
-      await fetchEvents();
+      await fetchEvents(); 
       // notify parent if provided
       if (onSave) await onSave(updated);
       // close modal on success
